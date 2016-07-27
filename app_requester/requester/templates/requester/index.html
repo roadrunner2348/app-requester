@@ -1,0 +1,17 @@
+{{ things.resultCount }} Results Found....
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Version</th>
+    <th>Price</th>
+  </tr>
+{% for app in things.results %}
+  <tr>
+    <td><a href="{% url 'app' app.trackId %}">{{ app.trackCensoredName }}</a></td>
+    <td>{{ app.description | truncatewords:20 }}
+    <td>{{ app.version }}</td>
+    <td>{{ app.formattedPrice }}</td>
+  </tr>
+{% endfor %}
+</table>

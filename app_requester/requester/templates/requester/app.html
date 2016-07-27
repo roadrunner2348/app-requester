@@ -1,0 +1,7 @@
+{% for appy in app.results %}
+<img src="{{ appy.artworkUrl60 }}"></img><h3>{{appy.trackCensoredName}}</h3>
+<p>{{appy.description}}</p>
+{{ appy.formattedprice }}
+{{ appy.version }}
+{{ appy.sellerName }}
+{% endfor %}
