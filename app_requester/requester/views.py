@@ -4,7 +4,9 @@ from . import models
 import requests, json
 
 def index(request):
-    cartCount = len(request.session.get('cartItems'))
+    if 'cartItems' not in request.session:
+        request.session['cartItems'] = []
+    cartCount = request.session.get('cartItems')
     if request.method == "POST":
         query = request.POST.get('search')
         results = iTunesSearch(request, query)
@@ -32,13 +34,17 @@ def addToCart(request, lookup):
     else:
         request.session['cartItems'] = [lookup]
     return HttpResponse('Ok')
-def getCart(request):
-    cart = request.session['cartItems']
+
+def getCartData(request):
+    cart = request.session.get('cartItems')
     cartData = []
     for item in cart:
         data = iTunesLookup(request, item)
-        cartData.append(data)
+        cartData.append(data['results'][0])
+    return cartData
 
+def getCart(request):
+    cartData = getCartData(request)
     return render(request, 'requester/cart.html', { 'cartData':cartData })
 
 def emptyCart(request):
@@ -47,9 +53,6 @@ def emptyCart(request):
 
 def createRequest(request):
     cart = request.session.get('cartItems')
-    cartData = []
-    for item in cart:
-        data = iTunesLookup(request, item)
-        cartData.append(data)
+    cartData = getCartData(request)
     emptyCart(request)
     return HttpResponse(cartData)
