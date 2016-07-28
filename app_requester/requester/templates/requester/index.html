@@ -4,6 +4,8 @@
   <input type="submit" value="search">
 </form>
 
+<h4><a href="{% url 'getCart' %}">Cart({{ cartCount }})</a></h4>
+
 {{ results.resultCount }} Results Found....
 <table>
   <tr>
@@ -11,6 +13,7 @@
     <th>Description</th>
     <th>Version</th>
     <th>Price</th>
+    <th></th>
   </tr>
 {% for app in results.results %}
   <tr>
@@ -18,6 +21,7 @@
     <td>{{ app.description | truncatewords:20 }}
     <td>{{ app.version }}</td>
     <td>{{ app.formattedPrice }}</td>
+    <td><a href="{% url 'addToCart' app.trackId %}">Add to Cart</a></td>
   </tr>
 {% endfor %}
 </table>

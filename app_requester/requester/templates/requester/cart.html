@@ -1,0 +1,21 @@
+<table>
+<tr>
+  <th>Icon</th>
+  <th>Name</th>
+  <th>Description</th>
+  <th>Version</th>
+  <th>Seller</th>
+</tr>
+{% for results in cartData %}
+{% for item in results.results %}
+<tr>
+  <td><img src="{{ item.artworkUrl60 }}"></img></td>
+  <td>{{ item.trackCensoredName }}</td>
+  <td>{{ item.description|truncatewords:20 }}</td>
+  <td>{{ item.version }}</td>
+  <td>{{ item.sellerName }}</td>
+</tr>
+{% endfor %}
+{% endfor %}
+</table>
+<a href="{% url 'emptyCart' %}">EmptyCart</a>

@@ -1,14 +1,16 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from . import models
 import requests, json
 
 def index(request):
+    cartCount = len(request.session.get('cartItems'))
     if request.method == "POST":
         query = request.POST.get('search')
         results = iTunesSearch(request, query)
-        return render(request, 'requester/index.html', {'results':results})
+        return render(request, 'requester/index.html', {'results':results, 'cartCount':cartCount})
     else:
-        return render(request, 'requester/index.html')
+        return render(request, 'requester/index.html', {'cartCount':cartCount})
 
 def app(request, lookup):
     app = iTunesLookup(request, lookup)
@@ -21,3 +23,33 @@ def iTunesSearch(request, query):
 def iTunesLookup(request, lookup):
     r = requests.get('https://itunes.apple.com/lookup?id=' + lookup)
     return r.json()
+
+def addToCart(request, lookup):
+    if 'cartItems' in request.session:
+        cartList = request.session.get('cartItems')
+        cartList.append(lookup)
+        request.session['cartItems'] = cartList
+    else:
+        request.session['cartItems'] = [lookup]
+    return HttpResponse('Ok')
+def getCart(request):
+    cart = request.session['cartItems']
+    cartData = []
+    for item in cart:
+        data = iTunesLookup(request, item)
+        cartData.append(data)
+
+    return render(request, 'requester/cart.html', { 'cartData':cartData })
+
+def emptyCart(request):
+    request.session['cartItems'] = []
+    return HttpResponse('OK')
+
+def createRequest(request):
+    cart = request.session.get('cartItems')
+    cartData = []
+    for item in cart:
+        data = iTunesLookup(request, item)
+        cartData.append(data)
+    emptyCart(request)
+    return HttpResponse(cartData)
