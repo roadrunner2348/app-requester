@@ -1,4 +1,10 @@
-{{ things.resultCount }} Results Found....
+<form action="{% url 'index' %}" method="post">
+  {% csrf_token %}
+  <input id="search" type="text" name="search">
+  <input type="submit" value="search">
+</form>
+
+{{ results.resultCount }} Results Found....
 <table>
   <tr>
     <th>Name</th>
@@ -6,7 +12,7 @@
     <th>Version</th>
     <th>Price</th>
   </tr>
-{% for app in things.results %}
+{% for app in results.results %}
   <tr>
     <td><a href="{% url 'app' app.trackId %}">{{ app.trackCensoredName }}</a></td>
     <td>{{ app.description | truncatewords:20 }}
