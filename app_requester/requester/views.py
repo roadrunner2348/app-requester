@@ -10,7 +10,7 @@ def index(request):
     if request.method == "POST":
         query = request.POST.get('search')
         results = iTunesSearch(request, query)
-        return render(request, 'requester/index.html', {'results':results, 'cartCount':cartCount})
+        return render(request, 'requester/index.html', {'results':results, 'cartCount':cartCount, 'query':query})
     else:
         return render(request, 'requester/index.html', {'cartCount':cartCount})
 
